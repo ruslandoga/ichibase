@@ -11,8 +11,7 @@ defmodule Ichibase.Application do
       IchibaseWeb.Telemetry,
       Ichibase.Repo,
       {Ecto.Migrator,
-        repos: Application.fetch_env!(:ichibase, :ecto_repos),
-        skip: skip_migrations?()},
+       repos: Application.fetch_env!(:ichibase, :ecto_repos), skip: skip_migrations?()},
       {DNSCluster, query: Application.get_env(:ichibase, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Ichibase.PubSub},
       # Start the Finch HTTP client for sending emails
