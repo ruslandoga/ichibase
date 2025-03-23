@@ -5,14 +5,14 @@ defmodule Ichibase.URL2SQLTest do
   test "it works" do
     schema = %{"users" => %{"id" => :integer, "name" => :text}}
 
-    assert URL2SQL.translate("/users?id.eq=123", schema) ==
+    assert URL2SQL.translate("/users?id=lt.123", schema) ==
              {"""
-              SELECT u0."id", u0."name" FROM "users" AS u0 WHERE ("id"=?)\
+              SELECT u0."id", u0."name" FROM "users" AS u0 WHERE (u0."id" < ?)\
               """, [123]}
 
-    assert URL2SQL.translate("/users?id.eq=123&name.eq=hello", schema) ==
+    assert URL2SQL.translate("/users?id=gte.123&name=eq.hello", schema) ==
              {"""
-              SELECT u0."id", u0."name" FROM "users" AS u0 WHERE ("id"=?) AND ("name"=?)\
+              SELECT u0."id", u0."name" FROM "users" AS u0 WHERE (u0."id" >= ?) AND (u0."name" = ?)\
               """, [123, "hello"]}
   end
 end
