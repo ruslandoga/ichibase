@@ -270,6 +270,7 @@ defmodule H1 do
   defp format_response(status, resp_headers, body) do
     [
       format_status_line(status),
+      # TODO ensure date header
       format_headers(ensure_content_length(resp_headers, body)),
       "\r\n"
       | body
