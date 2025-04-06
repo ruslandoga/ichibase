@@ -21,6 +21,9 @@ defmodule Ichi.MixProject do
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
-    []
+    [
+      {:finch, "~> 0.19.0", only: :test},
+      {:telemetry, "~> 1.3"}
+    ]
   end
 end

@@ -7,7 +7,14 @@ defmodule Ichi.Application do
 
   @impl true
   def start(_type, _args) do
-    children = []
+    children = [
+      # {Ichi.S3,
+      #  url: "http://localhost:9000/ichi",
+      #  access_key_id: "minioadmin",
+      #  secret_access_key: "minioadmin"},
+      # {Ichi.Repo, path: "./ichi.db"},
+      {Ichi.Endpoint, url: "http://localhost:4000"}
+    ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
