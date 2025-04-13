@@ -179,7 +179,7 @@ defmodule H1 do
   defp receive_headers(socket, buffer, headers, hcount, hsize) do
     case :erlang.decode_packet(:httph_bin, buffer, []) do
       {:ok, {:http_header, _, key, _, value}, rest} ->
-        key = String.downcase(Atom.to_string(key))
+        key = String.downcase(ensure_string(key))
 
         # TODO
         headers =
@@ -207,6 +207,9 @@ defmodule H1 do
         end
     end
   end
+
+  defp ensure_string(key) when is_atom(key), do: Atom.to_string(key)
+  defp ensure_string(key) when is_binary(key), do: key
 
   # TODO stream
   defp receive_body(socket, buffer, headers) do
