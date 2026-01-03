@@ -1,0 +1,52 @@
+name: mix
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  schedule:
+    - cron: "42 9 * * *"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      MIX_ENV: test
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - id: beam
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.19
+          otp-version: 28
+
+      - name: Restore deps cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            deps
+            _build
+          key: test-${{ steps.beam.outputs.elixir-version }}-${{ github.head_ref || github.ref }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            test-${{ steps.beam.outputs.elixir-version }}-${{ github.head_ref || github.ref }}-
+            test-${{ steps.beam.outputs.elixir-version }}-refs/heads/master-
+
+      - run: mix deps.get --check-locked
+      - run: mix deps.unlock --check-unused
+      - run: mix compile --warnings-as-errors
+      - run: mix format --check-formatted
+      - run: mix test
+
+      - name: Restore PLTs cache
+        uses: actions/cache@v5
+        with:
+          path: plts
+          key: plts-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-${{ github.head_ref || github.ref }}
+          restore-keys: |
+            plts-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-refs/heads/master
+
+      - run: mix dialyzer --format github
